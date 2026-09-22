@@ -8,18 +8,55 @@ scope** here — Phase 2+.
 
 ## This was never compiled
 
-No Flutter/Dart SDK and no pub.dev access were reachable from the sandbox
-this was written in, so **none of this has been run through `flutter
-analyze`, `flutter test`, `flutter pub get`, or a compiler** — every file
-was hand-written and hand-reviewed against the pinned package versions'
-documented APIs, not verified against them. A few files carry inline
-comments flagging the specific calls most likely to need a small
-signature fix once you can actually build (`sodium_libs`'s stream-push
-API in `file_crypto_service.dart`, `libsignal_protocol_dart`'s store
-interfaces in `signal_store_adapter.dart`). Treat the first local
-build as step one, not a formality. (`flutter_local_notifications`'s
-API in `local_notification_service.dart` has the same caveat but is
-currently dormant — see "Push notifications (disabled for now)".)
+No Flutter/Dart SDK was reachable from the sandbox this was written in, so
+**none of this has been run through `flutter analyze`, `flutter test`,
+`flutter pub get`, or a compiler** — every file was hand-written, then a
+second pass fixed everything an actual `flutter analyze` run turned up
+(see "Fixed after a real `flutter analyze` pass" below), verified against
+real pub.dev/GitHub API docs where pub.dev access became available. Treat
+the first local build as step one, not a formality — codegen (step 3
+below) hasn't been run either, so expect at least the `*.g.dart` `part`
+errors it fixes. `libsignal_protocol_dart`'s store interfaces in
+`signal_store_adapter.dart` are the one remaining area not independently
+re-verified against pub.dev this pass — double-check that file first if
+`flutter analyze` still flags it. (`flutter_local_notifications`'s API in
+`local_notification_service.dart` has the same not-yet-reverified caveat
+but is currently dormant — see "Push notifications (disabled for now)".)
+
+### Fixed after a real `flutter analyze` pass
+
+- **`file_crypto_service.dart` — rewritten.** The original code assumed an
+  imperative `push()`/`pull()` object API for `sodium_libs`'s secretstream.
+  The real API (verified against pub.dev's `sodium` package docs, which
+  `sodium_libs` re-exports) is Stream-transformer based:
+  `createPushEx`/`createPullEx` return a `StreamTransformer` you `.bind()`
+  to a `Stream<SecretStreamPlainMessage>` / `Stream<SecretStreamCipherMessage>`,
+  and the stream header is emitted as the *first* item of the cipher
+  stream rather than a separate synchronous property. Rewritten to match;
+  the chunking/truncation-detection behavior is unchanged. Note:
+  `sodium_libs` itself is discontinued upstream (superseded by depending
+  on the `sodium` package directly once Dart's native-asset build hooks
+  are in place) — the pinned `^3.4.2` still resolves and works, but is
+  worth migrating off eventually.
+- **`session_manager.dart`** — `InvalidMessageException` doesn't exist in
+  `libsignal_protocol_dart` 0.8.2 (confirmed against its published API
+  index — the Dart port doesn't export a dedicated MAC-failure exception).
+  Removed that specific `catch`; the general `catch` below it already
+  fails closed the same way.
+- **`supabase_auth_repository.dart`** — `package:supabase_flutter` re-exports
+  gotrue's own `OtpChannel` enum, which collided with this app's own
+  `OtpChannel` (`features/auth/domain/auth_repository.dart`). Fixed with
+  `import '...supabase_flutter.dart' hide OtpChannel;`.
+- **`supabase_device_repository.dart`** — `fetchRemotePreKeyBundle` was
+  assigning PostgREST's `bytea` columns (which come back as base64
+  strings over JSON, not raw bytes) straight into `Uint8List` fields.
+  Fixed with the same string-or-list decode already used for
+  `messages.ciphertext` in `chat_repository_impl.dart`.
+- **`chat_repository_impl.dart`, `supabase_media_repository.dart`** —
+  several `(result as Ok).value` casts were missing their generic type
+  argument, which resolves to `dynamic` and then fails to assign into a
+  typed parameter under this project's `strict-casts`/`strict-inference`
+  settings. Added the missing `<T>` on each.
 
 ## First steps, in order
 

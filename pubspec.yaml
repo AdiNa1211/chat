@@ -1,0 +1,80 @@
+name: secure_chat_app
+description: >
+  Flutter cross-platform E2EE chat and secure file-sharing app
+  (Android, iOS, Web) backed by Supabase. Phase 0 + Phase 1 (MVP) scope only:
+  auth, device/identity keys, 1:1 Signal-Protocol E2EE chat, encrypted media,
+  offline outbox sync, content-free push notifications.
+publish_to: "none"
+version: 0.1.0+1
+
+environment:
+  sdk: ">=3.4.0 <4.0.0"
+  flutter: ">=3.22.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # -- State management / DI -------------------------------------------------
+  flutter_bloc: ^8.1.6
+  equatable: ^2.0.5
+  get_it: ^7.7.0
+
+  # -- Backend ----------------------------------------------------------------
+  supabase_flutter: ^2.5.6
+
+  # -- Local database (encrypted) ---------------------------------------------
+  drift: ^2.19.0
+  sqlite3_flutter_libs: ^0.5.24
+  sqlcipher_flutter_libs: ^0.6.4
+  path_provider: ^2.1.3
+  path: ^1.9.0
+
+  # -- Secure key storage -------------------------------------------------
+  flutter_secure_storage: ^9.2.2
+
+  # -- E2EE (Signal Protocol: X3DH + Double Ratchet + Sender Keys) ------------
+  # Pure-Dart implementation of the Signal Protocol. See Section 3/8 of the
+  # architecture spec for the rationale and the FFI-libsignal migration note.
+  libsignal_protocol_dart: ^0.8.2
+
+  # -- File/media encryption (libsodium secretstream, streaming AEAD) --------
+  sodium_libs: ^3.4.2
+  cryptography: ^2.7.0
+
+  # -- Navigation ---------------------------------------------------------
+  go_router: ^17.5.0
+
+  # -- Connectivity / offline outbox ------------------------------------------
+  connectivity_plus: ^6.0.5
+
+  # -- Media picking / opening (Section 9 — mobile & desktop only in Phase 1;
+  # dart:io File streaming in FileCryptoService is not Web-compatible yet) ---
+  file_picker: ^8.1.2
+  mime: ^1.0.5
+  open_filex: ^4.5.0
+
+  # -- Push notifications -- DISABLED for now (dropped from Phase 1; see
+  # features/notifications/data/push_token_service.dart for how to bring
+  # it back) -----------------------------------------------------------
+  # firebase_core: ^3.3.0
+  # firebase_messaging: ^15.0.4
+  # flutter_local_notifications: ^17.2.2
+
+  # -- Utilities ----------------------------------------------------------
+  uuid: ^4.4.2
+  intl: ^0.19.0
+  logging: ^1.2.0
+  collection: ^1.18.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  bloc_test: ^9.1.7
+  mocktail: ^1.0.4
+  drift_dev: ^2.19.0
+  build_runner: ^2.4.11
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true

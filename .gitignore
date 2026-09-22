@@ -1,0 +1,146 @@
+```gitignore
+# =========================
+# Flutter / Dart
+# =========================
+
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+
+# Generated files
+*.g.dart
+*.freezed.dart
+*.mocks.dart
+
+# Coverage
+coverage/
+*.lcov
+
+# =========================
+# Android
+# =========================
+
+.gradle/
+.idea/
+android/.gradle/
+android/app/build/
+android/build/
+android/.cxx/
+android/local.properties
+
+# Android Studio generated files
+*.iml
+
+# Signing / keystores
+*.jks
+*.keystore
+key.properties
+
+# =========================
+# iOS / macOS
+# =========================
+
+ios/Pods/
+ios/.symlinks/
+ios/Flutter/ephemeral/
+ios/Flutter/.last_build_id
+
+# Xcode
+DerivedData/
+*.xcuserstate
+*.xcuserdata/
+*.xccheckout
+*.moved-aside
+*.pbxuser
+
+# Xcode user-specific workspace data
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+
+# =========================
+# Web
+# =========================
+
+# Web build output is covered by build/
+web/.dart_tool/
+
+# =========================
+# Windows
+# =========================
+
+windows/flutter/ephemeral/
+windows/runner/Debug/
+windows/runner/Release/
+windows/runner/Profile/
+
+# =========================
+# Linux
+# =========================
+
+linux/flutter/ephemeral/
+
+# =========================
+# macOS
+# =========================
+
+macos/Flutter/ephemeral/
+macos/Pods/
+
+# =========================
+# IDEs
+# =========================
+
+# Android Studio / IntelliJ
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# VS Code
+.vscode/
+!.vscode/settings.json
+
+# =========================
+# OS
+# =========================
+
+.DS_Store
+Thumbs.db
+
+# =========================
+# Environment / Secrets
+# =========================
+
+.env
+.env.*
+!.env.example
+
+# Firebase / service account credentials
+google-services.json
+GoogleService-Info.plist
+*.pem
+*.p12
+*.p8
+
+# =========================
+# Logs / Temporary files
+# =========================
+
+*.log
+*.tmp
+*.temp
+*.swp
+*.swo
+
+# =========================
+# Local configuration
+# =========================
+
+local.properties
+*.local
+```
